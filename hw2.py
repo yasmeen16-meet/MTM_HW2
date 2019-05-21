@@ -1,3 +1,5 @@
+import Techniovision
+
 def data_contains(faculty_program_dict, program):
     for value in faculty_program_dict.values():
         if value == program:
@@ -29,16 +31,14 @@ def inside_contest(faculty, file_name):
                 else:
                     programs_votes[voted_program] = 20
     max_votes = 0
-    for program, votes in programs_votes.items():
+    for programs, votes in programs_votes.items():
         if votes > max_votes:
             max_votes = votes
-            first = program
+            first = programs
     file.close()
     return first
 
 
-# first = inside_contest('CS', 'input.txt')
-# print(first)
 
 # main()
 file1 = open('input.txt', 'r')
@@ -49,13 +49,17 @@ for line_current in file1:
         faculty_current = line[-1]
         if faculty_current not in faculty_program:
             first_program = inside_contest(faculty_current, 'input.txt')
-            # print(first_program)
             faculty_program[faculty_current] = first_program
 file1.close()
-# print(faculty_program)
 
+# flipping the dictionary items, the key becomes the data and the data becomes the key
+program_faculty = {}
+for faculty , program in faculty_program.items():
+    program_faculty[program]=faculty
+# end of flipping
 file2 = open('input.txt', 'r')
 forbidden_votes = []
+techniovision = Techniovision.TechniovisionCreate()
 for line_current in file2:
     line = line_current.split()
     # checking that the vote is legal, voting for a valid program
@@ -63,8 +67,12 @@ for line_current in file2:
         student_id = line[1]
         if not data_contains(faculty_program, line[2]):
             forbidden_votes.append(student_id)
-        # elif student_id not in forbidden_votes:
-        # call the function students_votes(...)
+        elif student_id not in forbidden_votes:
+            student_faculty = line[-1]
+            voting_faculty = program_faculty[line[2]]
+            Techniovision.TechniovisionStudentVotes(techniovision ,int( student_id )
+                                                    , str (student_faculty),str(voting_faculty))
 
+Techniovision.TechniovisionWinningFaculty(techniovision)
+Techniovision.TechniovisionDestroy(techniovision)
 file2.close()
-print(forbidden_votes)
