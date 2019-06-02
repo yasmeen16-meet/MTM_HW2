@@ -45,7 +45,7 @@ file1 = open('input.txt', 'r')
 faculty_program = {}
 for line_current in file1:
     line = line_current.split()
-    if line[0] == 'inside':
+    if line[0] == 'inside' or line[0] == 'staff':
         faculty_current = line[-1]
         if faculty_current not in faculty_program:
             first_program = inside_contest(faculty_current, 'input.txt')
@@ -59,15 +59,25 @@ for faculty , program in faculty_program.items():
 # end of flipping
 file2 = open('input.txt', 'r')
 forbidden_votes = []
-techniovision = Techniovision.TechniovisionCreate()
+
 for line_current in file2:
     line = line_current.split()
     # checking that the vote is legal, voting for a valid program
     if line[0] == 'techniovision':
         student_id = line[1]
-        if not data_contains(faculty_program, line[2]):
+        if not data_contains(faculty_program, line[2]) and student_id not in forbidden_votes:
             forbidden_votes.append(student_id)
-        elif student_id not in forbidden_votes:
+file2.close()
+file3 = open('input.txt', 'r')
+techniovision = Techniovision.TechniovisionCreate()
+for line_current in file3:
+    line = line_current.split()
+    # checking that the vote is legal, voting for a valid program
+    if line[0] == 'techniovision':
+       student_id = line[1]
+    #  if not data_contains(faculty_program, line[2]):
+    #     forbidden_votes.append(student_id)
+       if student_id not in forbidden_votes:
             student_faculty = line[-1]
             voting_faculty = program_faculty[line[2]]
             Techniovision.TechniovisionStudentVotes(techniovision ,int( student_id )
@@ -75,4 +85,4 @@ for line_current in file2:
 
 Techniovision.TechniovisionWinningFaculty(techniovision)
 Techniovision.TechniovisionDestroy(techniovision)
-file2.close()
+file3.close()
